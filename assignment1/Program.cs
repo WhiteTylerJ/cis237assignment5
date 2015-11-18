@@ -21,20 +21,11 @@ namespace assignment1
     {
         static void Main(string[] args)
         {
-            //Set a constant for the size of the collection
-            const int wineItemCollectionSize = 4000;
-
-            //Set a constant for the path to the CSV File
-            const string pathToCSVFile = "../../../datafiles/winelist.csv";
+            //Gets accesss to the collection of tables
+            BeveragesTWhite beveragesTWhite = new BeveragesTWhite();
 
             //Create an instance of the UserInterface class
             UserInterface userInterface = new UserInterface();
-
-            //Create an instance of the WineItemCollection class
-            IWineCollection wineItemCollection = new WineItemCollection(wineItemCollectionSize);
-
-            //Create an instance of the CSVProcessor class
-            CSVProcessor csvProcessor = new CSVProcessor();
 
             //Display the Welcome Message to the user
             userInterface.DisplayWelcomeGreeting();
@@ -43,65 +34,120 @@ namespace assignment1
             //This is the 'primer' run of displaying and getting.
             int choice = userInterface.DisplayMenuAndGetResponse();
 
-            while (choice != 5)
+            while (choice != 6)
             {
                 switch (choice)
                 {
                     case 1:
-                        //Load the CSV File
-                        bool success = csvProcessor.ImportCSV(wineItemCollection, pathToCSVFile);
-                        if (success)
+                        //Print the Entire List of Items
+                        Console.WriteLine("Please wait...");
+                        Console.WriteLine();
+                        foreach (Beverage bev in beveragesTWhite.Beverages)
                         {
-                            //Display Success Message
-                            userInterface.DisplayImportSuccess();
-                        }
-                        else
-                        {
-                            //Display Fail Message
-                            userInterface.DisplayImportError();
+                            Console.WriteLine(bev.id + " " + bev.name + " " + bev.pack + " " + bev.price);
                         }
                         break;
 
                     case 2:
-                        //Print Entire List Of Items
-                        string[] allItems = wineItemCollection.GetPrintStringsForAllItems();
-                        if (allItems.Length > 0)
+                        //Search for an item by id
+                        string itemID = userInterface.GetSearchQuery();
+                        Console.WriteLine("Please wait...");
+                        try
                         {
-                            //Display all of the items
-                            userInterface.DisplayAllItems(allItems);
-                        }
-                        else
+                            Beverage bevToFind = beveragesTWhite.Beverages.Where(bev => bev.id == itemID).First();
+                            Console.WriteLine();
+                            Console.WriteLine(bevToFind.id + " " + bevToFind.name + " " + bevToFind.pack + " " + bevToFind.price);
+                        }catch (Exception e)
                         {
-                            //Display error message for all items
-                            userInterface.DisplayAllItemsError();
-                        }
+                            Console.WriteLine();
+                            Console.WriteLine("***********************");
+                            Console.WriteLine("ERROR: CANNOT FIND ITEM");
+                            Console.WriteLine("***********************");
+                        } 
                         break;
 
                     case 3:
-                        //Search For An Item
-                        string searchQuery = userInterface.GetSearchQuery();
-                        string itemInformation = wineItemCollection.FindById(searchQuery);
-                        if (itemInformation != null)
+                        //Update an item
+                        string updateItemID = userInterface.GetUpdateQuery();
+                        Console.WriteLine("Please wait...");
+                        try
                         {
-                            userInterface.DisplayItemFound(itemInformation);
+                            Beverage bevToFindToUpdate = beveragesTWhite.Beverages.Find(updateItemID);
+                            Console.WriteLine("Updating " + bevToFindToUpdate.name);
+                            Console.WriteLine();
+
+                            Console.Write("Enter the new id: ");
+                            string newID = Console.ReadLine();
+
+                            Console.Write("Enter the new name: ");
+                            string newName = Console.ReadLine();
+
+                            Console.Write("Enter the new pack size: ");
+                            string newPack = Console.ReadLine();
+
+                            Console.Write("Enter the new price: ");
+                            string newPrice = Console.ReadLine();
+
+                            //update beverage
+                            bevToFindToUpdate.id = newID;
+                            bevToFindToUpdate.name = newName;
+                            bevToFindToUpdate.pack = newPack;
+                            bevToFindToUpdate.price = Decimal.Parse(newPrice);
+
+                            Console.WriteLine("Updated Successfully");
+                            //save changes
+                            beveragesTWhite.SaveChanges();
+
                         }
-                        else
+                        catch (Exception e)
                         {
-                            userInterface.DisplayItemFoundError();
+                            Console.WriteLine();
+                            Console.WriteLine("***********************");
+                            Console.WriteLine("ERROR: CANNOT FIND ITEM");
+                            Console.WriteLine("***********************");
                         }
                         break;
 
                     case 4:
-                        //Add A New Item To The List
-                        string[] newItemInformation = userInterface.GetNewItemInformation();
-                        if (wineItemCollection.FindById(newItemInformation[0]) == null)
+                        //Add an new item to the list
+                        string[] newInfo = userInterface.GetNewItemInformation();
+
+                        Beverage newBev = new Beverage();
+                        newBev.id = newInfo[0];
+                        newBev.name = newInfo[1];
+                        newBev.pack = newInfo[2];
+                        newBev.price = Decimal.Parse(newInfo[3]);
+
+                        //Add the new beverage to the table
+                        //beveragesTWhite.Beverages.Add(newBev);
+                        //Save changes
+                        //beveragesTWhite.SaveChanges();
+
+                        Console.WriteLine();
+                        Console.Write(newBev.id + " " + newBev.name + " " + newBev.pack + " " + newBev.price);
+                        Console.Write(" was added to the database.");
+                        Console.WriteLine();
+
+                        break;
+                    case 5:
+                        //Delete an item
+                        string itemToDelete = userInterface.GetDeleteQuery();
+                        Console.WriteLine("Please wait...");
+                        try
                         {
-                            wineItemCollection.AddNewItem(newItemInformation[0], newItemInformation[1], newItemInformation[2]);
-                            userInterface.DisplayAddWineItemSuccess();
+                            Beverage bevToFind = beveragesTWhite.Beverages.Where(bev => bev.id == itemToDelete).First();
+                            beveragesTWhite.Beverages.Remove(bevToFind);
+                            Console.WriteLine("Item successfully removed.");
+
+                            //save changes
+                            beveragesTWhite.SaveChanges();
                         }
-                        else
+                        catch (Exception e)
                         {
-                            userInterface.DisplayItemAlreadyExistsError();
+                            Console.WriteLine();
+                            Console.WriteLine("***********************");
+                            Console.WriteLine("ERROR: CANNOT FIND ITEM");
+                            Console.WriteLine("***********************");
                         }
                         break;
                 }

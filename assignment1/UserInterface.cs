@@ -11,7 +11,7 @@ namespace assignment1
 {
     class UserInterface
     {
-        const int maxMenuChoice = 5;
+        const int maxMenuChoice = 6;
         //---------------------------------------------------
         //Public Methods
         //---------------------------------------------------
@@ -55,7 +55,25 @@ namespace assignment1
         public string GetSearchQuery()
         {
             Console.WriteLine();
-            Console.WriteLine("What would you like to search for?");
+            Console.WriteLine("Enter the ID of the item you would like to search for.");
+            Console.Write("> ");
+            return Console.ReadLine();
+        }
+
+        //Same as above except for updating 
+        public string GetUpdateQuery()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Enter the ID of the item you would like to update.");
+            Console.Write("> ");
+            return Console.ReadLine();
+        }
+        
+        //Same as above except for deleting
+        public string GetDeleteQuery()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Enter the ID of the item you would like to delete.");
             Console.Write("> ");
             return Console.ReadLine();
         }
@@ -67,14 +85,17 @@ namespace assignment1
             Console.WriteLine("What is the new items Id?");
             Console.Write("> ");
             string id = Console.ReadLine();
-            Console.WriteLine("What is the new items Description?");
+            Console.WriteLine("What is the new items Name?");
             Console.Write("> ");
             string description = Console.ReadLine();
             Console.WriteLine("What is the new items Pack?");
             Console.Write("> ");
             string pack = Console.ReadLine();
+            Console.WriteLine("What is the new items Price");
+            Console.Write("> ");
+            string price = Console.ReadLine();
 
-            return new string[] { id, description, pack };
+            return new string[] { id, description, pack, price };
         }
 
         //Display Import Success
@@ -92,13 +113,9 @@ namespace assignment1
         }
 
         //Display All Items
-        public void DisplayAllItems(string[] allItemsOutput)
+        public void DisplayAllItems()
         {
-            Console.WriteLine();
-            foreach (string itemOutput in allItemsOutput)
-            {
-                Console.WriteLine(itemOutput);
-            }
+           
         }
 
         //Display All Items Error
@@ -148,11 +165,12 @@ namespace assignment1
             Console.WriteLine();
             Console.WriteLine("What would you like to do?");
             Console.WriteLine();
-            Console.WriteLine("1. Load Wine List From CSV");
-            Console.WriteLine("2. Print The Entire List Of Items");
-            Console.WriteLine("3. Search For An Item");
+            Console.WriteLine("1. Print The Entire List Of Items");
+            Console.WriteLine("2. Search For An Item by ID");
+            Console.WriteLine("3. Update an item");
             Console.WriteLine("4. Add New Item To The List");
-            Console.WriteLine("5. Exit Program");
+            Console.WriteLine("5. Delete an item");
+            Console.WriteLine("6. Exit Program");
         }
 
         //Display the Prompt
