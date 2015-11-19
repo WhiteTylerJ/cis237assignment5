@@ -21,7 +21,7 @@ namespace assignment1
     {
         static void Main(string[] args)
         {
-            //Gets accesss to the collection of tables
+            //Gets access to the collection of tables
             BeveragesTWhite beveragesTWhite = new BeveragesTWhite();
 
             //Create an instance of the UserInterface class
@@ -72,7 +72,7 @@ namespace assignment1
                         Console.WriteLine("Please wait...");
                         try
                         {
-                            Beverage bevToFindToUpdate = beveragesTWhite.Beverages.Find(updateItemID);
+                            Beverage bevToFindToUpdate = beveragesTWhite.Beverages.Where(bev => bev.id == updateItemID).First();
                             Console.WriteLine("Updating " + bevToFindToUpdate.name);
                             Console.WriteLine();
 
@@ -111,6 +111,7 @@ namespace assignment1
                     case 4:
                         //Add an new item to the list
                         string[] newInfo = userInterface.GetNewItemInformation();
+                        Console.WriteLine("Please wait...");
 
                         Beverage newBev = new Beverage();
                         newBev.id = newInfo[0];
@@ -119,9 +120,9 @@ namespace assignment1
                         newBev.price = Decimal.Parse(newInfo[3]);
 
                         //Add the new beverage to the table
-                        //beveragesTWhite.Beverages.Add(newBev);
+                        beveragesTWhite.Beverages.Add(newBev);
                         //Save changes
-                        //beveragesTWhite.SaveChanges();
+                        beveragesTWhite.SaveChanges();
 
                         Console.WriteLine();
                         Console.Write(newBev.id + " " + newBev.name + " " + newBev.pack + " " + newBev.price);

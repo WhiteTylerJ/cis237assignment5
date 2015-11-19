@@ -66,5 +66,5 @@ Solution Requirements:
 inclass database demonstration 
 
 ## Known Problems, Issues, And/Or Errors in the Program
-
+Savechanges throws an error after updating an item, but only after updating. It works everywhere else.
 
